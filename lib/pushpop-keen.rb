@@ -21,7 +21,11 @@ module Pushpop
 
     def run(last_response=nil, step_responses=nil)
       self.configure(last_response, step_responses)
-      ::Keen.send(self._analysis_type, self._event_collection, self.to_analysis_options)
+      if self._analysis_type == 'funnel'
+        ::Keen.funnel(self.to_analysis_options)
+      else
+        ::Keen.send(self._analysis_type, self._event_collection, self.to_analysis_options)
+      end
     end
 
     def configure(last_response=nil, step_responses=nil)

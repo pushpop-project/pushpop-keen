@@ -51,6 +51,29 @@ describe Pushpop::Keen do
       response = step.run
       response.should == 365
     end
+
+    it 'should run funnels directly, instead of using send' do
+      step = Pushpop::Keen.new('one') do
+        analysis_type 'funnel'
+        steps [
+          {
+            actor_property: 'uuid',
+            event_collection: 'pageviews',
+            timeframe: 'this_3_days'
+          },
+          {  
+            actor_property: 'uuid',
+            event_collection: 'link_clicks',
+            timeframe: 'this_3_days'
+          }
+        ]
+      end
+
+      expect(Keen).to receive(:funnel)
+      expect(Keen).not_to receive(:send)
+
+      step.run
+    end
   end
 
   describe '#to_analysis_options' do
