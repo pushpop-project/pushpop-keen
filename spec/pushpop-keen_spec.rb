@@ -37,6 +37,17 @@ describe Pushpop::Keen do
 
   end
 
+  describe '#record' do
+    it 'should record an event with properties' do
+      step = Pushpop::Keen.new do
+        record 'Pageview', useragent: 'Chrome'
+      end
+
+      expect(Keen).to receive(:publish).with('Pageview', useragent: 'Chrome')
+      step.run
+    end
+  end
+
   describe '#run' do
     it 'should run the query based on the analysis type' do
       Keen.stub(:count).with('pageviews', {
@@ -50,6 +61,17 @@ describe Pushpop::Keen do
       end
       response = step.run
       response.should == 365
+    end
+
+    it 'should not try to run a query if the analysis type isnt set' do
+      step = Pushpop::Keen.new do
+        group_by 'something'
+      end
+
+      expect(Keen).not_to receive(:send)
+      expect(Keen).not_to receive(:funnel)
+
+      step.run
     end
 
     it 'should run funnels directly, instead of using send' do

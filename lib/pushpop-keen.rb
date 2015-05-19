@@ -20,16 +20,23 @@ module Pushpop
     attr_accessor :_analyses
 
     def run(last_response=nil, step_responses=nil)
-      self.configure(last_response, step_responses)
+      ret = self.configure(last_response, step_responses)
+
       if self._analysis_type == 'funnel'
         ::Keen.funnel(self.to_analysis_options)
-      else
+      elsif !self._analysis_type.nil?
         ::Keen.send(self._analysis_type, self._event_collection, self.to_analysis_options)
+      else
+        ret
       end
     end
 
     def configure(last_response=nil, step_responses=nil)
       self.instance_exec(last_response, step_responses, &block)
+    end
+
+    def record(name, properties)
+      ::Keen.publish(name, properties)
     end
 
     def to_analysis_options
