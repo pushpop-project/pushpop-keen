@@ -33,7 +33,8 @@ job 'average response time for successful requests last month' do
     target_property   'request.duration'
     group_by          'check.name'
     interval          'daily'
-    timeframe         'last_month',
+    timeframe         'last_month'
+    max_age           '300', #cache the query for 5 minutes
     filters           [{ property_name: "response.successful",
                          operator: "eq",
                          property_value: true }]
@@ -67,4 +68,4 @@ The `keen` plugin requires that the following environment variables are set:
 
 ### Contributing
 
-Code and documentation issues and pull requests are welcome.
+Code, documentation issues, and pull requests welcome!
