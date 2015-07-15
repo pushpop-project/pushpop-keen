@@ -18,6 +18,7 @@ module Pushpop
     attr_accessor :_filters
     attr_accessor :_steps
     attr_accessor :_analyses
+    attr_accessor :_max_age
 
     def run(last_response=nil, step_responses=nil)
       ret = self.configure(last_response, step_responses)
@@ -46,6 +47,7 @@ module Pushpop
         interval: self._interval,
         filters: self._filters,
         analyses: self._analyses,
+        max_age: self._max_age,
         steps: self._steps
       }.delete_if { |_, v| v.nil? }
     end
@@ -84,6 +86,10 @@ module Pushpop
 
     def analyses(analyses)
       self._analyses = analyses
+    end
+
+    def max_age(max_age)
+      self._max_age = max_age
     end
 
   end
